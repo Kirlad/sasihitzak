@@ -431,6 +431,7 @@
                 <div class="control-group">
                     <label for="syllableCount" data-text="syllable-count-label">Silaba kopurua:</label>
                     <select id="syllableCount">
+                        <option value="1">1 <span data-text="syllables">silaba</span></option>
                         <option value="2">2 <span data-text="syllables">silaba</span></option>
                         <option value="3" selected>3 <span data-text="syllables">silaba</span></option>
                         <option value="4">4 <span data-text="syllables">silaba</span></option>
@@ -439,6 +440,7 @@
                     </select>
                 </div>
                 <button class="generate-btn" onclick="generateWord()" id="generate-btn">✨ <span data-text="generate-word">Hitza Sortu</span></button>
+                <button class="case-toggle-btn" onclick="toggleCase()" id="case-toggle-btn" title="">Aa</button>
             </div>
             
             <div class="syllable-word" id="syllableWord">
@@ -603,12 +605,15 @@
 
         let currentLanguage = 'eu';
         let currentSyllables = [...defaultSyllables['eu']];
+        let isUpperCase = false; // ADD THIS LINE
 
         // Cargar configuración al inicio
         window.addEventListener('load', function() {
             loadSettings();
             updatePrintGrid();
             generateWord();
+            toggleCase();
+            updateCaseToggleButton();
         });
 
         // Función para cambiar idioma
@@ -709,7 +714,8 @@
             selectedSyllables.forEach((syllable, index) => {
                 const card = document.createElement('div');
                 card.className = 'syllable-card';
-                card.textContent = syllable;
+                //card.textContent = syllable;
+                card.textContent = isUpperCase ? syllable.toUpperCase() : syllable.toLowerCase();
                 
                 // Añadir animación de entrada con retraso
                 card.style.opacity = '0';
@@ -726,6 +732,36 @@
             });
         }
 
+        // Función para alternar entre mayúsculas y minúsculas
+        function toggleCase() {
+            isUpperCase = !isUpperCase;
+            updateCaseToggleButton();
+            
+            // Actualizar las tarjetas existentes
+            const syllableCards = document.querySelectorAll('.syllable-card');
+            syllableCards.forEach(card => {
+                const currentText = card.textContent;
+                card.textContent = isUpperCase ? currentText.toUpperCase() : currentText.toLowerCase();
+            });
+            
+            saveSettings();
+        }
+
+        // Función para actualizar el botón de mayúsculas/minúsculas
+        function updateCaseToggleButton() {
+            const button = document.getElementById('case-toggle-btn');
+            const texts = translations[currentLanguage];
+            
+            if (isUpperCase) {
+                button.textContent = 'AA';
+                button.classList.add('uppercase');
+                button.title = texts['case-toggle-uppercase'] || 'Mayúsculas';
+            } else {
+                button.textContent = 'aa';
+                button.classList.remove('uppercase');
+                button.title = texts['case-toggle-lowercase'] || 'Minúsculas';
+            }
+        }
         // Función para actualizar la grilla de impresión
         function updatePrintGrid() {
             const printGrid = document.getElementById('printGrid');
