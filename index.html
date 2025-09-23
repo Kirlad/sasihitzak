@@ -807,7 +807,7 @@
                     customDiv.style.display = 'block';
                 } else {
                     customDiv.style.display = 'none';
-                    currentSyllables = [...defaultSyllables];
+                    currentSyllables = [...defaultSyllables[currentLanguage]];
                     updatePrintGrid();
                     saveSettings();
                 }
@@ -867,17 +867,17 @@
             // Como no podemos usar localStorage, usar configuración por defecto
             const settings = window.appSettings || {
                 dictionary: 'default',
-                customSyllables: [...defaultSyllables]
+                customSyllables: [...defaultSyllables[currentLanguage]]
             };
-            
+
             document.querySelector(`input[value="${settings.dictionary}"]`).checked = true;
-            
+
             if (settings.dictionary === 'custom') {
                 document.getElementById('customSyllables').style.display = 'block';
                 currentSyllables = settings.customSyllables;
                 document.getElementById('customSyllableText').value = currentSyllables.join(', ');
             } else {
-                currentSyllables = [...defaultSyllables];
+                currentSyllables = [...defaultSyllables[currentLanguage]];
             }
         }
 
